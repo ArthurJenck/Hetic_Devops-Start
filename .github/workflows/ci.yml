@@ -24,7 +24,7 @@ jobs:
             - name: Run tests
               run: |
                   cd app
-                  set -o pipefall
+                  set -o pipefail
                   npm test 2>&1 | tee test-output.txt
             - uses: actions/upload-artifact@v4
               if: always()
