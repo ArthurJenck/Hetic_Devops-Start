@@ -1,0 +1,82 @@
+apiVersion: v2
+name: devops-app-chart
+description: A Helm chart for Kubernetes
+
+# A chart can be either an 'application' or a 'library' chart.
+#
+# Application charts are a collection of templates that can be packaged into versioned archives
+# to be deployed.
+#
+# Library charts provide useful utilities or functions for the chart developer. They're included as
+# a dependency of application charts to inject those utilities and functions into the rendering
+# pipeline. Library charts do not define any templates and therefore cannot be deployed.
+type: application
+
+# This is the chart version. This version number should be incremented each time you make changes
+# to the chart and its templates, including the app version.
+# Versions are expected to follow Semantic Versioning (https://semver.org/)
+version: 0.1.0
+
+# This is the version number of the application being deployed. This version number should be
+# incremented each time you make changes to the application. Versions are not expected to
+# follow Semantic Versioning. They should reflect the version the application is using.
+# It is recommended to use it with quotes.
+appVersion: '1.16.0'
+# -- Nombre de réplicas
+replicaCount: 3
+
+image:
+    repository: devops-app
+    tag: 'latest'
+    pullPolicy: IfNotPresent
+
+service:
+    type: ClusterIP
+    port: 80
+
+ingress:
+    enabled: true
+    host: devops.local
+
+resources:
+    requests:
+        cpu: 100m
+        memory: 128Mi
+    limits:
+        cpu: 250m
+        memory: 256Mi
+
+# -- Configuration applicative
+config:
+    nodeEnv: production
+    logLevel: info
+    appPort: '3000'
+
+# -- Base de données
+postgresql:
+    enabled: true
+    auth:
+        database: appdb
+        username: appuser
+        # Le password doit être fourni via --set ou un secret externe
+    primary:
+        persistence:
+            size: 1Gi
+
+# -- Probes
+probes:
+    readiness:
+        path: /
+        initialDelaySeconds: 5
+        periodSeconds: 10
+    liveness:
+        path: /
+        initialDelaySeconds: 15
+        periodSeconds: 20
+
+# -- Autoscaling
+autoscaling:
+    enabled: false
+    minReplicas: 2
+    maxReplicas: 10
+    targetCPUUtilizationPercentage: 70
