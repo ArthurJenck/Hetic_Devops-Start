@@ -63,7 +63,7 @@ jobs:
 
             # Scanner les dépendances
             - name: Scan dependencies
-              uses: aquasecurity/trivy-action@0.33.1
+              uses: aquasecurity/trivy-action@0.35.0
               with:
                   scan-type: 'fs'
                   scan-ref: 'app/'
@@ -76,7 +76,7 @@ jobs:
               run: docker build -t devops-app:scan app/
 
             - name: Scan Docker image
-              uses: aquasecurity/trivy-action@0.33.1
+              uses: aquasecurity/trivy-action@0.35.0
               with:
                   image-ref: 'devops-app:scan'
                   severity: 'HIGH,CRITICAL'
@@ -93,7 +93,7 @@ jobs:
 
             # Scanner IaC (Terraform)
             - name: Scan IaC
-              uses: aquasecurity/trivy-action@0.33.1
+              uses: aquasecurity/trivy-action@0.35.0
               with:
                   scan-type: 'config'
                   scan-ref: 'infra/'
