@@ -9,14 +9,17 @@ RUN npm test
 
 FROM node:20-alpine AS production
 
-RUN addgroup -g 1001 appgroup && \ 
+RUN apk upgrade --no-cache && \
+    addgroup -g 1001 appgroup && \
     adduser -u 1001 -G appgroup -s /bin/sh -D appuser
 
 WORKDIR /app
 
 COPY package.json package-lock.json ./
-RUN npm ci --omit=dev --ignore-scripts && \ 
-    npm cache clean --force
+RUN npm ci --omit=dev --ignore-scripts && \
+    npm cache clean --force && \
+    rm -rf /root/.npm /usr/local/lib/node_modules/npm && \
+    rm -f /usr/local/bin/npm /usr/local/bin/npx
 
 COPY src/ ./src/
 
